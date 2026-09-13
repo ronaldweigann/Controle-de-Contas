@@ -1,163 +1,175 @@
+import { useEffect, useState } from 'react'
+
+import Sidebar from './components/Sidebar'
+import Header from './components/Header'
+
+import Dashboard from './pages/Dashboard'
+import Contas from './pages/Contas'
+import Relatorios from './pages/Relatorios'
+import Configuracoes from './pages/Configuracoes'
+
+const contasIniciais = [
+  {
+    id: 1,
+    nome: 'Internet',
+    valor: 140,
+    data: '2026-09-15',
+    categoria: 'Internet',
+    paga: false,
+  },
+  {
+    id: 2,
+    nome: 'Energia',
+    valor: 200,
+    data: '2026-09-16',
+    categoria: 'Casa',
+    paga: false,
+  },
+  {
+    id: 3,
+    nome: 'Água',
+    valor: 70,
+    data: '2026-09-18',
+    categoria: 'Casa',
+    paga: true,
+  },
+]
+
 function App() {
+  const [paginaAtual, setPaginaAtual] = useState('dashboard')
+
+  const [contas, setContas] = useState(() => {
+    const contasSalvas = localStorage.getItem('conta-facil-contas')
+
+    if (contasSalvas) {
+      return JSON.parse(contasSalvas)
+    }
+
+    return contasIniciais
+  })
+
+  const [menuAberto, setMenuAberto] = useState(false)
+
+  useEffect(() => {
+    localStorage.setItem(
+      'conta-facil-contas',
+      JSON.stringify(contas)
+    )
+  }, [contas])
+
+  function adicionarConta(novaConta) {
+    const conta = {
+      ...novaConta,
+      id: Date.now(),
+    }
+
+    setContas((contasAtuais) => [
+      ...contasAtuais,
+      conta,
+    ])
+
+    setPaginaAtual('contas')
+  }
+
+  function marcarComoPaga(id) {
+    setContas((contasAtuais) =>
+      contasAtuais.map((conta) =>
+        conta.id === id
+          ? { ...conta, paga: true }
+          : conta
+      )
+    )
+  }
+
+  function excluirConta(id) {
+    const confirmou = window.confirm(
+      'Deseja realmente excluir esta conta?'
+    )
+
+    if (!confirmou) {
+      return
+    }
+
+    setContas((contasAtuais) =>
+      contasAtuais.filter((conta) => conta.id !== id)
+    )
+  }
+
+  function limparContas() {
+    setContas([])
+  }
+
+  function renderizarPagina() {
+    switch (paginaAtual) {
+      case 'dashboard':
+        return (
+          <Dashboard
+            contas={contas}
+            irParaContas={() => setPaginaAtual('contas')}
+          />
+        )
+
+      case 'contas':
+        return (
+          <Contas
+            contas={contas}
+            adicionarConta={adicionarConta}
+            marcarComoPaga={marcarComoPaga}
+            excluirConta={excluirConta}
+          />
+        )
+
+      case 'relatorios':
+        return <Relatorios contas={contas} />
+
+      case 'configuracoes':
+        return (
+          <Configuracoes
+            contas={contas}
+            limparContas={limparContas}
+          />
+        )
+
+      default:
+        return (
+          <Dashboard
+            contas={contas}
+            irParaContas={() => setPaginaAtual('contas')}
+          />
+        )
+    }
+  }
+
   return (
     <div className="min-h-screen bg-slate-100">
 
-        {/* HEADER */}
-      <header className="border-b border-slate-200 bg-white">
-        <div className="flex h-16 items-center justify-between px-6">
+      <div className="flex min-h-screen">
 
-          <div>
-            <h1 className="text-xl font-bold text-slate-900">
-              Controle de Contas
-            </h1>
+        <Sidebar
+          paginaAtual={paginaAtual}
+          mudarPagina={setPaginaAtual}
+          menuAberto={menuAberto}
+          fecharMenu={() => setMenuAberto(false)}
+        />
 
-            <p className="text-xs text-slate-500">
-              Controle suas contas
-            </p>
-          </div>
+        <div className="flex min-w-0 flex-1 flex-col">
 
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-600 font-bold text-white">
-            R
-          </div>
+          <Header
+            abrirMenu={() => setMenuAberto(true)}
+          />
+
+          <main className="flex-1 p-4 sm:p-6 lg:p-8">
+            <div className="mx-auto max-w-7xl">
+              {renderizarPagina()}
+            </div>
+          </main>
 
         </div>
-      </header>
 
-        {/* CONTEÚDO */}
-      <main className="mx-auto max-w-7xl p-6">
+      </div>
 
-          {/* TÍTULO */}
-        <div className="mb-8">
-          <h2 className="text-3xl font-bold text-slate-900">
-            Olá
-          </h2>
-
-          <p className="mt-1 text-slate-500">
-            Aqui está o resumo das suas conta.
-          </p>
-        </div>
-
-          {/* CARD */}
-        <div className="grid gap-4 md:grid-cols-3">
-            {/* TOTAL */}
-          <div className="rounded-2xl bg-white p-6 shadow-sm">
-            <p className="text-sm font-medium text-slate-500">
-              Total de contas
-            </p>
-
-            <h3 className="mt-2 text-3xl font-bold text-slate-900">
-              R$ 1.250,00
-            </h3>
-
-            <p className="mt-2 text-sm text-slate-500">
-              Este mês
-            </p>
-          </div>
-
-            {/* PAGAS */}
-          <div className="rounded-2xl bg-white p-6 shadow-sm">
-            <p className="text-sm font-medium text-slate-500">
-              Contas pagas
-            </p>
-
-            <h3 className="mt-2 text-3xl font-bold text-emerald-600">
-              R$ 650,00
-            </h3>
-
-            <p className="mt-2 text-sm text-slate-500">
-              Já quitadas
-            </p>
-          </div>
-
-            {/* PENDENTES */}
-          <div className="rounded-2xl bg-white p-6 shadow-sm">
-            <p className="text-sm font-medium text-slate-500">
-              Contas pendentes
-            </p>
-
-            <h3 className="mt-2 text-3xl font-bold text-orange-500">
-              R$ 600,00
-            </h3>
-
-            <p className="mt-2 text-sm text-slate-500">
-              Aguardando pagamento
-            </p>
-          </div>
-        </div>
-
-          {/* PRÓXIMAS CONTAS */}
-        <section className="mt-8 rounded-2xl bg-white p-6 shadow-sm">
-          <div className="mb-6 flex items-center justify-between">
-            <div>
-              <h3 className="text-lg font-bold text-slate-900">
-                Próximas contas
-              </h3>
-
-              <p className="text-sm text-slate-500">
-                Contas que estão próximas do vencimento
-              </p>
-            </div>
-
-            <button className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700">
-              + Nova conta
-            </button>
-          </div>
-
-            {/* CONTA 1 */}
-          <div className="flex items-center justify-between border-b border-slate-100 py-4">
-            <div>
-              <h4 className="font-semibold text-slate-800">
-                Internet
-              </h4>
-
-              <p className="text-sm text-slate-500">
-                Vencimento: 15/09/2026
-              </p>
-            </div>
-
-            <strong className="text-slate-900">
-              R$ 140,00
-            </strong>
-          </div>
-
-          {/* CONTA 2 */}
-          <div className="flex items-center justify-between border-b border-slate-100 py-4">
-            <div>
-              <h4 className="font-semibold text-slate-800">
-                Energia
-              </h4>
-
-              <p className="text-sm text-slate-500">
-                Vencimento: 16/09/2026
-              </p>
-            </div>
-
-            <strong className="text-slate-900">
-              R$ 200,00
-            </strong>
-          </div>
-
-          {/* CONTA 1 */}
-          <div className="flex items-center justify-between border-b border-slate-100 py-4">
-            <div>
-              <h4 className="font-semibold text-slate-800">
-                Água
-              </h4>
-
-              <p className="text-sm text-slate-500">
-                Vencimento: 16/09/2026
-              </p>
-            </div>
-
-            <strong className="text-slate-900">
-              R$ 70,00
-            </strong>
-          </div>
-
-        </section>
-      </main>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
