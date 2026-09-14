@@ -7,7 +7,7 @@ O projeto permite cadastrar, editar, excluir e marcar contas como pagas, além d
 ## 🚀 Demonstração
 
 🔗 **Acesse o projeto:**  
-https://controle-de-contas-svq00eutx-ronald-weigans-projects.vercel.app/
+https://controle-de-contas-sooty.vercel.app/
 
 ## 📌 Funcionalidades
 

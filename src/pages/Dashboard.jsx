@@ -88,7 +88,7 @@ function Dashboard({ contas, nomeUsuario, irParaContas }) {
               </p>
 
               <p className="mt-2 text-2xl font-bold text-slate-900">
-                {totalContas}
+                {formatarValor(valorTotal)}
               </p>
             </div>
 
@@ -98,7 +98,7 @@ function Dashboard({ contas, nomeUsuario, irParaContas }) {
           </div>
 
           <p className="mt-4 text-sm text-slate-500">
-            {formatarValor(valorTotal)}
+            {totalContas} Contas
           </p>
         </div>
 
@@ -106,10 +106,11 @@ function Dashboard({ contas, nomeUsuario, irParaContas }) {
         <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-slate-500">Contas pagas</p>
+              <p className="text-sm font-medium text-slate-500">Total pago</p>
 
               <p className="mt-2 text-2xl font-bold text-emerald-600">
-                {contasPagas.length}
+                
+                {formatarValor(valorPago)}
               </p>
             </div>
 
@@ -119,7 +120,7 @@ function Dashboard({ contas, nomeUsuario, irParaContas }) {
           </div>
 
           <p className="mt-4 text-sm text-slate-500">
-            {formatarValor(valorPago)}
+            {contasPagas.length} Contas
           </p>
         </div>
 
@@ -132,7 +133,7 @@ function Dashboard({ contas, nomeUsuario, irParaContas }) {
               </p>
 
               <p className="mt-2 text-2xl font-bold text-amber-600">
-                {contasPendentes.length}
+                {formatarValor(valorPendente)}
               </p>
             </div>
 
@@ -142,7 +143,7 @@ function Dashboard({ contas, nomeUsuario, irParaContas }) {
           </div>
 
           <p className="mt-4 text-sm text-slate-500">
-            {formatarValor(valorPendente)}
+            {contasPendentes.length} Contas
           </p>
         </div>
 
@@ -155,7 +156,7 @@ function Dashboard({ contas, nomeUsuario, irParaContas }) {
               </p>
 
               <p className="mt-2 text-2xl font-bold text-red-600">
-                {contasAtrasadas.length}
+                {formatarValor(valorAtrasado)}
               </p>
             </div>
 
@@ -165,7 +166,7 @@ function Dashboard({ contas, nomeUsuario, irParaContas }) {
           </div>
 
           <p className="mt-4 text-sm text-red-600">
-            {formatarValor(valorAtrasado)}
+            {contasAtrasadas.length}
           </p>
         </div>
       </div>
@@ -228,32 +229,7 @@ function Dashboard({ contas, nomeUsuario, irParaContas }) {
         )}
       </div>
 
-      {/* Resumo financeiro */}
-      <div className="mt-6 grid gap-4 md:grid-cols-3">
-        <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-5">
-          <p className="text-sm font-medium text-emerald-700">Valor já pago</p>
-
-          <p className="mt-2 text-xl font-bold text-emerald-800">
-            {formatarValor(valorPago)}
-          </p>
-        </div>
-
-        <div className="rounded-2xl border border-amber-200 bg-amber-50 p-5">
-          <p className="text-sm font-medium text-amber-700">Valor pendente</p>
-
-          <p className="mt-2 text-xl font-bold text-amber-800">
-            {formatarValor(valorPendente)}
-          </p>
-        </div>
-
-        <div className="rounded-2xl border border-red-200 bg-red-50 p-5">
-          <p className="text-sm font-medium text-red-700">Valor atrasado</p>
-
-          <p className="mt-2 text-xl font-bold text-red-800">
-            {formatarValor(valorAtrasado)}
-          </p>
-        </div>
-      </div>
+      
     </div>
   );
 }
