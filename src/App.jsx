@@ -1,150 +1,159 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from "react";
 
-import Sidebar from './components/Sidebar'
-import Header from './components/Header'
+import Sidebar from "./components/Sidebar";
+import Header from "./components/Header";
+import Welcome from "./components/Welcome";
 
-import Dashboard from './pages/Dashboard'
-import Contas from './pages/Contas'
-import Relatorios from './pages/Relatorios'
-import Configuracoes from './pages/Configuracoes'
+import Dashboard from "./pages/Dashboard";
+import Contas from "./pages/Contas";
+import Relatorios from "./pages/Relatorios";
+import Configuracoes from "./pages/Configuracoes";
 
-const contasIniciais = [
-  {
-    id: 1,
-    nome: 'Internet',
-    valor: 140,
-    data: '2026-09-15',
-    categoria: 'Internet',
-    paga: false,
-  },
-  {
-    id: 2,
-    nome: 'Energia',
-    valor: 200,
-    data: '2026-09-16',
-    categoria: 'Casa',
-    paga: false,
-  },
-  {
-    id: 3,
-    nome: 'Água',
-    valor: 70,
-    data: '2026-09-18',
-    categoria: 'Casa',
-    paga: true,
-  },
-]
+const contasIniciais = [];
 
 function App() {
-  const [paginaAtual, setPaginaAtual] = useState('dashboard')
+  const [paginaAtual, setPaginaAtual] = useState("dashboard");
+
+  const [nomeUsuario, setNomeUsuario] = useState(() => {
+    return localStorage.getItem("conta-facil-nome") || "";
+  });
 
   const [contas, setContas] = useState(() => {
-    const contasSalvas = localStorage.getItem('conta-facil-contas')
+    const contasSalvas = localStorage.getItem("conta-facil-contas");
 
-    if (contasSalvas) {
-      return JSON.parse(contasSalvas)
+    if (!contasSalvas) {
+      return contasIniciais;
     }
 
-    return contasIniciais
-  })
+    try {
+      const contasConvertidas = JSON.parse(contasSalvas);
 
-  const [menuAberto, setMenuAberto] = useState(false)
+      if (Array.isArray(contasConvertidas)) {
+        return contasConvertidas;
+      }
+
+      return contasIniciais;
+    } catch (error) {
+      console.error("Erro ao carregar contas:", error);
+      return contasIniciais;
+    }
+  });
+
+  const [menuAberto, setMenuAberto] = useState(false);
 
   useEffect(() => {
-    localStorage.setItem(
-      'conta-facil-contas',
-      JSON.stringify(contas)
-    )
-  }, [contas])
+    localStorage.setItem("conta-facil-contas", JSON.stringify(contas));
+  }, [contas]);
+
+  function salvarNome(nome) {
+    const nomeFinal = nome.trim();
+
+    if (!nomeFinal) {
+      return;
+    }
+
+    localStorage.setItem("conta-facil-nome", nomeFinal);
+    setNomeUsuario(nomeFinal);
+  }
 
   function adicionarConta(novaConta) {
     const conta = {
       ...novaConta,
       id: Date.now(),
-    }
+    };
 
-    setContas((contasAtuais) => [
-      ...contasAtuais,
-      conta,
-    ])
+    setContas((contasAtuais) => [...contasAtuais, conta]);
 
-    setPaginaAtual('contas')
+    setPaginaAtual("contas");
+  }
+
+  function editarConta(contaAtualizada) {
+    setContas((contasAtuais) =>
+      contasAtuais.map((conta) =>
+        conta.id === contaAtualizada.id ? contaAtualizada : conta,
+      ),
+    );
   }
 
   function marcarComoPaga(id) {
     setContas((contasAtuais) =>
       contasAtuais.map((conta) =>
-        conta.id === id
-          ? { ...conta, paga: true }
-          : conta
-      )
-    )
+        conta.id === id ? { ...conta, paga: true } : conta,
+      ),
+    );
   }
 
   function excluirConta(id) {
-    const confirmou = window.confirm(
-      'Deseja realmente excluir esta conta?'
-    )
+    const confirmou = window.confirm("Deseja realmente excluir esta conta?");
 
     if (!confirmou) {
-      return
+      return;
     }
 
     setContas((contasAtuais) =>
-      contasAtuais.filter((conta) => conta.id !== id)
-    )
+      contasAtuais.filter((conta) => conta.id !== id),
+    );
   }
 
   function limparContas() {
-    setContas([])
+    setContas([]);
   }
 
   function renderizarPagina() {
     switch (paginaAtual) {
-      case 'dashboard':
+      case "dashboard":
         return (
           <Dashboard
             contas={contas}
-            irParaContas={() => setPaginaAtual('contas')}
+            nomeUsuario={nomeUsuario}
+            irParaContas={() => setPaginaAtual("contas")}
           />
-        )
+        );
 
-      case 'contas':
+      case "contas":
         return (
           <Contas
             contas={contas}
             adicionarConta={adicionarConta}
+            editarConta={editarConta}
             marcarComoPaga={marcarComoPaga}
             excluirConta={excluirConta}
           />
-        )
+        );
 
-      case 'relatorios':
-        return <Relatorios contas={contas} />
+      case "relatorios":
+        return <Relatorios contas={contas} />;
 
-      case 'configuracoes':
+      case "configuracoes":
         return (
           <Configuracoes
             contas={contas}
             limparContas={limparContas}
+            nomeUsuario={nomeUsuario}
+            salvarNome={salvarNome}
           />
-        )
+        );
 
       default:
         return (
           <Dashboard
             contas={contas}
-            irParaContas={() => setPaginaAtual('contas')}
+            nomeUsuario={nomeUsuario}
+            irParaContas={() => setPaginaAtual("contas")}
           />
-        )
+        );
     }
+  }
+
+  // Se o usuário ainda não informou o nome,
+  // mostra a tela de boas-vindas.
+  if (!nomeUsuario) {
+    return <Welcome salvarNome={salvarNome} />;
   }
 
   return (
     <div className="min-h-screen bg-slate-100">
-
       <div className="flex min-h-screen">
-
         <Sidebar
           paginaAtual={paginaAtual}
           mudarPagina={setPaginaAtual}
@@ -153,23 +162,18 @@ function App() {
         />
 
         <div className="flex min-w-0 flex-1 flex-col">
-
           <Header
             abrirMenu={() => setMenuAberto(true)}
+            nomeUsuario={nomeUsuario}
           />
 
           <main className="flex-1 p-4 sm:p-6 lg:p-8">
-            <div className="mx-auto max-w-7xl">
-              {renderizarPagina()}
-            </div>
+            <div className="mx-auto max-w-7xl">{renderizarPagina()}</div>
           </main>
-
         </div>
-
       </div>
-
     </div>
-  )
+  );
 }
 
-export default App
+export default App;

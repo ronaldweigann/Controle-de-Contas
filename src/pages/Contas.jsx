@@ -1,7 +1,7 @@
 import AccountForm from "../components/AccountForm";
 import AccountTable from "../components/AccountTable";
 
-function Contas({ contas, adicionarConta, marcarComoPaga, excluirConta }) {
+function Contas({ contas, adicionarConta, editarConta, marcarComoPaga, excluirConta }) {
   return (
     <div>
       <div className="mb-8">
@@ -27,6 +27,7 @@ function Contas({ contas, adicionarConta, marcarComoPaga, excluirConta }) {
 
         <AccountTable
           contas={contas}
+          editarConta={editarConta}
           marcarComoPaga={marcarComoPaga}
           excluirConta={excluirConta}
         />

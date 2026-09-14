@@ -5,43 +5,37 @@ import {
   Cell,
   Tooltip,
   Legend,
-} from 'recharts'
+} from "recharts";
 
 function Relatorios({ contas }) {
   const dadosPorCategoria = contas.reduce((resultado, conta) => {
-    const categoria = conta.categoria || 'Outros'
+    const categoria = conta.categoria || "Outros";
 
     if (!resultado[categoria]) {
-      resultado[categoria] = 0
+      resultado[categoria] = 0;
     }
 
-    resultado[categoria] += Number(conta.valor)
+    resultado[categoria] += Number(conta.valor);
 
-    return resultado
-  }, {})
+    return resultado;
+  }, {});
 
-  const dados = Object.entries(dadosPorCategoria).map(
-    ([categoria, valor]) => ({
-      categoria,
-      valor,
-    })
-  )
+  const dados = Object.entries(dadosPorCategoria).map(([categoria, valor]) => ({
+    categoria,
+    valor,
+  }));
 
-  const total = contas.reduce(
-    (soma, conta) => soma + Number(conta.valor),
-    0
-  )
+  const total = contas.reduce((soma, conta) => soma + Number(conta.valor), 0);
 
   function formatarValor(valor) {
-    return Number(valor).toLocaleString('pt-BR', {
-      style: 'currency',
-      currency: 'BRL',
-    })
+    return Number(valor).toLocaleString("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    });
   }
 
   return (
     <div>
-
       <div className="mb-8">
         <h2 className="text-2xl font-bold text-slate-900 sm:text-3xl">
           Relatórios
@@ -53,11 +47,8 @@ function Relatorios({ contas }) {
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">
-
         <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-          <p className="text-sm text-slate-500">
-            Total cadastrado
-          </p>
+          <p className="text-sm text-slate-500">Total cadastrado</p>
 
           <h3 className="mt-2 text-3xl font-bold text-slate-900">
             {formatarValor(total)}
@@ -69,7 +60,6 @@ function Relatorios({ contas }) {
         </div>
 
         <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm lg:col-span-2">
-
           <h3 className="text-lg font-bold text-slate-900">
             Gastos por categoria
           </h3>
@@ -79,16 +69,15 @@ function Relatorios({ contas }) {
           </p>
 
           {dados.length === 0 ? (
-            <div className="flex `min-h-[300px]` items-center justify-center">
+            <div className="flex min-h-75 items-center justify-center">
               <p className="text-sm text-slate-500">
                 Cadastre contas para visualizar o gráfico.
               </p>
             </div>
           ) : (
-            <div className="mt-6 `h-[350px]` w-full">
+            <div className="mt-6 h-87.5 w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
-
                   <Pie
                     data={dados}
                     dataKey="valor"
@@ -96,32 +85,39 @@ function Relatorios({ contas }) {
                     cx="50%"
                     cy="50%"
                     outerRadius={110}
-                    label
+                    label={({ value }) => formatarValor(value)}
                   >
                     {dados.map((item, index) => (
                       <Cell
                         key={`cell-${index}`}
+                        fill={
+                          [
+                            "#3b82f6",
+                            "#10b981",
+                            "#f59e0b",
+                            "#ef4444",
+                            "#8b5cf6",
+                            "#06b6d4",
+                            "#ec4899",
+                            "#84cc16",
+                            "#f97316",
+                          ][index % 9]
+                        }
                       />
                     ))}
                   </Pie>
 
-                  <Tooltip
-                    formatter={(valor) => formatarValor(valor)}
-                  />
+                  <Tooltip formatter={(valor) => formatarValor(valor)} />
 
                   <Legend />
-
                 </PieChart>
               </ResponsiveContainer>
             </div>
           )}
-
         </div>
-
       </div>
-
     </div>
-  )
+  );
 }
 
-export default Relatorios
+export default Relatorios;
