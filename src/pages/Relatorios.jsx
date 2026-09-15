@@ -8,9 +8,9 @@ import {
 } from "recharts";
 
 function Relatorios({ contas }) {
-  // =========================================================
+  // ====================
   // FUNÇÕES AUXILIARES
-  // =========================================================
+  // ====================
 
   function estaAtrasada(conta) {
     if (conta.paga) {
@@ -32,9 +32,9 @@ function Relatorios({ contas }) {
     });
   }
 
-  // =========================================================
+  // ==================
   // RESUMO FINANCEIRO
-  // =========================================================
+  // ==================
 
   const totalContas = contas.length;
 
@@ -66,9 +66,9 @@ function Relatorios({ contas }) {
     0,
   );
 
-  // =========================================================
+  // =====================
   // GASTOS POR CATEGORIA
-  // =========================================================
+  // =====================
 
   const dadosPorCategoria = contas.reduce((resultado, conta) => {
     const categoria = conta.categoria || "Outros";
@@ -87,15 +87,13 @@ function Relatorios({ contas }) {
     valor,
   }));
 
-  // =========================================================
+  // =============
   // RENDERIZAÇÃO
-  // =========================================================
+  // =============
 
   return (
     <div>
-      {/* =====================================================
-          TÍTULO
-          ===================================================== */}
+      {/* TÍTULO */}
 
       <div className="mb-8">
         <h2 className="text-2xl font-bold text-slate-900 sm:text-3xl">
@@ -107,14 +105,11 @@ function Relatorios({ contas }) {
         </p>
       </div>
 
-      {/* =====================================================
-          ÁREA PRINCIPAL
-          ===================================================== */}
+      {/* ÁREA PRINCIPAL */}
 
       <div className="grid gap-6 lg:grid-cols-3">
-        {/* ===================================================
-            CARD RESUMO FINANCEIRO
-            =================================================== */}
+
+        {/* CARD RESUMO FINANCEIRO */}
 
         <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
           <p className="text-sm font-medium text-slate-500">Total cadastrado</p>
@@ -202,9 +197,7 @@ function Relatorios({ contas }) {
           </div>
         </div>
 
-        {/* ===================================================
-            GRÁFICO
-            =================================================== */}
+        {/* GRÁFICO */}
 
         <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm lg:col-span-2">
           <h3 className="text-lg font-bold text-slate-900">
