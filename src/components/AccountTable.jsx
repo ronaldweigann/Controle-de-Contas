@@ -134,9 +134,7 @@ function AccountTable({ contas, editarConta, marcarComoPaga, excluirConta }) {
 
   return (
     <div>
-      {/* =========================================================
-          VERSÃO DESKTOP
-          ========================================================= */}
+      {/* VERSÃO DESKTOP */}
 
       <div className="hidden overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm md:block">
         <div className="overflow-x-auto">
@@ -228,9 +226,7 @@ function AccountTable({ contas, editarConta, marcarComoPaga, excluirConta }) {
         </div>
       </div>
 
-      {/* =========================================================
-          VERSÃO MOBILE
-          ========================================================= */}
+      {/* VERSÃO MOBILE */}
 
       <div className="space-y-4 md:hidden">
         {contas.map((conta) => (
@@ -313,9 +309,7 @@ function AccountTable({ contas, editarConta, marcarComoPaga, excluirConta }) {
         ))}
       </div>
 
-      {/* =========================================================
-          FORMULÁRIO DE EDIÇÃO
-          ========================================================= */}
+      {/* FORMULÁRIO DE EDIÇÃO */}
 
       {contaEditando !== null && (
         <div className="mt-4 rounded-2xl border border-blue-200 bg-white p-5 shadow-sm sm:p-6">
